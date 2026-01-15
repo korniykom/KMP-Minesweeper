@@ -1,6 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     id("com.korniykom.convention.android.library")
@@ -13,8 +10,13 @@ kotlin {
     androidTarget()
 
     sourceSets {
-        commonMain() {
-
+        commonMain.dependencies {
+            api(compose.runtime)
+            api(compose.foundation)
+            api(compose.material3)
+            api(compose.ui)
+            api(compose.components.resources)
+            api(compose.components.uiToolingPreview)
         }
     }
 

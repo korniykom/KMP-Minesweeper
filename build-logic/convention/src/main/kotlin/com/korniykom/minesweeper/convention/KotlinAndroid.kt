@@ -12,6 +12,8 @@ internal fun Project.configureKotlinAndroid(
     commonExtension: CommonExtension<*, *, *, *, *, *>
 ) {
     with(commonExtension) {
+        namespace = "com.korniykom.minesweeper.${project.name.replace("-", "")}"
+
         compileSdk = libs.findVersion("projectCompileSdkVersion").get().toString().toInt()
 
         defaultConfig.minSdk = libs.findVersion("projectMinSdkVersion").get().toString().toInt()
