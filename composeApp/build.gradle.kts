@@ -10,13 +10,7 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
-
+    androidTarget()
     jvm("desktop")
 
     sourceSets {
@@ -27,6 +21,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            implementation(projects.core.presentation)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)

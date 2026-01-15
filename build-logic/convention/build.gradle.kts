@@ -37,5 +37,9 @@ gradlePlugin {
             id = "com.korniykom.convention.android.application"
             implementationClass = "AndroidApplicationConventionPlugin"
         }
+        register("androidLibrary") {
+            id = "com.korniykom.convention.android.library"
+            implementationClass = "AndroidLibraryConventionPlugin"
+        }
     }
 }
