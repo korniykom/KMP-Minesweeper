@@ -32,6 +32,14 @@ datastore = "1.2.0"
 mockk = "1.14.7"
 kotest = "6.0.7"
 
+projectApplicationId = "com.korniykom.chat"
+projectVersionName = "1.0"
+projectMinSdkVersion = "26"
+projectTargetSdkVersion = "36"
+projectCompileSdkVersion = "36"
+projectVersionCode = "1"
+
+
 [libraries]
 # Kotlin
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -67,12 +75,19 @@ kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", versio
 kotest-framework-datatest = { module = "io.kotest:kotest-framework-datatest", version.ref = "kotest" }
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref = "kotest" }
 
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+compose-gradle-plugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+
+
 [bundles]
 kotlin = ["kotlinx-dateTime", "coroutines-core", "kotlinx-serialization"]
 koin-compose = ["koin-compose", "koin-compose-viewmodel", "koin-compose-viewmodel-navigation"]
 test = ["kotest-assertions-core", "kotest-framework-engine", "kotest-framework-datatest"]
 
 [plugins]
+convention-android-application = { id = "com.korniykom.convention.android.application", version = "unspecified"}
+
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
