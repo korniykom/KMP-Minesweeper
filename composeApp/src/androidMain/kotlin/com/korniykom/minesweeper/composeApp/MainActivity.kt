@@ -1,4 +1,4 @@
-package com.korniykom.minesweeper
+package com.korniykom.minesweeper.composeApp
 
 import android.content.Context
 import android.os.Bundle
@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.korniykom.minesweeper.App
 import org.koin.dsl.module
 
 class MainActivity : ComponentActivity() {
