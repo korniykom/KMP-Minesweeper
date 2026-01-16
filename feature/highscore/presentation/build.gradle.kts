@@ -12,19 +12,15 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-
         }
         commonMain.dependencies {
+            implementation(libs.koin.core)
+            implementation(libs.bundles.koin.compose)
+
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.compose.material3)
-            implementation(libs.compose.navigation)
-
             implementation(libs.kotlinx.serialization)
-
 
         }
         jvmMain.dependencies {

@@ -21,14 +21,20 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.core.presentation)
+            implementation(projects.feature.highscore.presentation)
+            implementation(projects.feature.menu.presentation)
+
 
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
 
-            implementation(projects.feature.menu.presentation)
-
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.navigation)
+
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

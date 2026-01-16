@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun MenuScreen(
+internal fun MenuScreen(
     goToPlay:() -> Unit,
     goToHighScore: () -> Unit,
     goToSettings: () -> Unit,
