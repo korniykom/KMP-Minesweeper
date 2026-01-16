@@ -18,6 +18,8 @@ kotlin {
 
         }
         commonMain.dependencies {
+            implementation(projects.core.presentation)
+
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.compose.material3)
