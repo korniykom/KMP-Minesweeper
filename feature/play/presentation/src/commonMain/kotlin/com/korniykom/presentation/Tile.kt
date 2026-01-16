@@ -2,6 +2,7 @@ package com.korniykom.presentation
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.korniykom.minesweeper.presentation.LocalColors
 import com.korniykom.minesweeper.presentation.LocalDimensions
 import minesweeper.feature.play.presentation.generated.resources.Res
@@ -25,12 +30,28 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun Tile(
     state: TileState,
+    revealedBorderWidth: Dp,
+    hiddenBorderWidth: Dp,
     modifier: Modifier = Modifier
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .background(Color.Gray)
+            .background(LocalColors.current.background)
+            .run {
+                if (state is TileState.Revealed) {
+                    border(
+                        width = revealedBorderWidth,
+                        color = LocalColors.current.borderDark
+                    )
+                } else {
+                    hiddenTile(
+                        borderThickness = hiddenBorderWidth,
+                        borderLightColor = LocalColors.current.borderLight,
+                        borderDarkColor = LocalColors.current.borderDark
+                    )
+                }
+            }
     ) {
         when (state) {
             is TileState.Hidden -> {
@@ -53,7 +74,7 @@ fun Tile(
             }
 
             is TileState.Revealed.Number -> {
-                val color = when(state.number) {
+                val color = when (state.number) {
                     1 -> LocalColors.current.one
                     2 -> LocalColors.current.two
                     3 -> LocalColors.current.three
@@ -62,8 +83,7 @@ fun Tile(
                     6 -> LocalColors.current.six
                     7 -> LocalColors.current.seven
                     8 -> LocalColors.current.eight
-                    9 -> LocalColors.current.nine
-                    else -> LocalColors.current.background
+                    else -> LocalColors.current.nine
                 }
                 state.number?.let { number ->
                     Text(
@@ -82,6 +102,44 @@ fun Tile(
     }
 }
 
+private fun Modifier.hiddenTile(
+    borderThickness: Dp,
+    borderLightColor: Color,
+    borderDarkColor: Color
+) = drawWithContent {
+    drawContent()
+
+    val thicknessPixels = borderThickness.toPx()
+    val lightColor = borderLightColor
+    val darkColor = borderDarkColor
+    val width = size.width
+    val height= size.height
+
+    drawPath(
+        path = Path().apply {
+            moveTo(0f, 0f)
+            lineTo(0f, height)
+            lineTo(thicknessPixels, height-thicknessPixels)
+            lineTo(thicknessPixels, thicknessPixels)
+            lineTo(width - thicknessPixels, thicknessPixels)
+            lineTo(width, 0f)
+        },
+        color =  lightColor
+    )
+    drawPath(
+        path = Path().apply {
+            moveTo(width, 0f)
+            lineTo(width, height)
+            lineTo(0f, height)
+            lineTo(thicknessPixels, height - thicknessPixels)
+            lineTo(width - thicknessPixels, height - thicknessPixels)
+            lineTo(width - thicknessPixels, thicknessPixels)
+        },
+        color =  darkColor
+    )
+
+}
+
 
 @Composable
 @Preview
@@ -91,7 +149,9 @@ fun TilePreview() {
         states.forEach { state ->
             Tile(
                 state = state,
-                modifier = Modifier.size(LocalDimensions.current.iconLarge)
+                modifier = Modifier.size(LocalDimensions.current.iconLarge),
+                revealedBorderWidth = 2.dp,
+                hiddenBorderWidth = 4.dp
             )
         }
     }
