@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -32,6 +33,7 @@ fun Tile(
     state: TileState,
     revealedBorderWidth: Dp,
     hiddenBorderWidth: Dp,
+    textStyle: TextStyle = TextStyle(),
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -70,6 +72,7 @@ fun Tile(
                     painter = painterResource(Res.drawable.mine),
                     tint = LocalColors.current.mine,
                     contentDescription = null,
+                    modifier = Modifier.fillMaxSize(fraction = 0.6f)
                 )
             }
 
@@ -87,6 +90,7 @@ fun Tile(
                 }
                 state.number?.let { number ->
                     Text(
+                        style = textStyle,
                         text = number.toString(),
                         textAlign = TextAlign.Center,
                         color = color,
