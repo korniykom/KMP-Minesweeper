@@ -21,6 +21,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.core.presentation)
+            implementation(projects.core.data)
             implementation(projects.feature.highscore.presentation)
             implementation(projects.feature.menu.presentation)
 
@@ -33,6 +34,9 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.compose.material3)
             implementation(libs.compose.navigation)
+
+            implementation(libs.datastore.preferences.core)
+
 
 
         }

@@ -51,7 +51,6 @@ compose-icons-extended = "1.7.3"
 [libraries]
 
 compose-runtime={module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-plugin"}
-compose-multiplatform-resources={module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-plugin"}
 compose-icons-extended={module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "compose-icons-extended"}
 compose-navigation={module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation"}
 compose-foundation={module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-plugin"}
