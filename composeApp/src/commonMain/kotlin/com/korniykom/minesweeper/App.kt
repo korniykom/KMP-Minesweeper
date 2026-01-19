@@ -7,8 +7,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.korniykom.presentation.Highscores
 import com.korniykom.presentation.Menu
+import com.korniykom.settings.presentation.Settings
 import com.korniykom.presentation.highscoresRoutes
 import com.korniykom.presentation.menuRoutes
+import com.korniykom.settings.presentation.settingsRoutes
 import org.koin.compose.KoinApplication
 import org.koin.core.module.Module
 
@@ -34,9 +36,12 @@ fun App(
                     goToHighScore = {
                         navController.navigate(Highscores)
                     },
-                    goToSettings = {}
+                    goToSettings = {
+                        navController.navigate(Settings)
+                    }
                 )
                 highscoresRoutes()
+                settingsRoutes()
             }
         }
     }

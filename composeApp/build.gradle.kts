@@ -24,6 +24,8 @@ kotlin {
             implementation(projects.core.data)
             implementation(projects.feature.highscore.presentation)
             implementation(projects.feature.menu.presentation)
+            implementation(projects.feature.settings.data)
+            implementation(projects.feature.settings.presentation)
 
 
             implementation(libs.koin.core)

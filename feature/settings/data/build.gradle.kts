@@ -1,7 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     id("com.korniykom.convention.android.library")
@@ -19,8 +15,14 @@ kotlin {
         }
         commonMain.dependencies {
 
+            implementation(projects.feature.settings.domain)
+            implementation(projects.core.data)
+
+
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
+
+            implementation(libs.bundles.kotlin)
 
             implementation(libs.datastore.preferences.core)
         }
