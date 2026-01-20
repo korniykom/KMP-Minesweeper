@@ -34,12 +34,64 @@ class PlayViewModel(
     }
 
     fun onClick(row: Int, col: Int) {
+        val currentRealTile = _boardState.value[row][col]
+        val currentUserTile = _userBoard.value[row][col]
+        if(currentRealTile is TileState.Revealed.Number && currentRealTile.number == null) {
+            recursivelyRevealEmptyTiles(row, col)
+        } else {
+            _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
+                boardRow.mapIndexed { colIndex, tile ->
+                    if(row == rowIndex && col == colIndex) {
+                        _boardState.value[row][col]
+                    } else {
+                        tile
+                    }
+                }
+            }
+        }
+    }
+
+    private fun recursivelyRevealEmptyTiles(row: Int, col: Int, visitedTiles: MutableSet<Pair<Int, Int>> = mutableSetOf()) {
+        if(row !in _boardState.value.indices || col !in _boardState.value[0].indices) return
+        val userTile = _userBoard.value[row][col]
+        val realTile = _boardState.value[row][col]
+
+        if(visitedTiles.contains(row to col)) return
+        if(userTile !is TileState.Hidden) return
+
+        visitedTiles += row to col
+
+        _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
+            boardRow.mapIndexed { colIndex, tile ->
+                if(rowIndex == row && colIndex == col) {
+                    realTile
+                } else {
+                    tile
+                }
+            }
+        }
+
+        if(realTile is TileState.Revealed.Number && realTile.number == null) {
+            val neighbors = listOf(
+                row - 1 to col - 1,
+                row - 1 to col,
+                row - 1 to col + 1,
+                row to col - 1,
+                row to col + 1,
+                row + 1 to col - 1,
+                row + 1 to col,
+                row + 1 to col + 1
+            )
+            neighbors.forEach { (row, col) ->
+                recursivelyReviewEmptyTiles(row, col, visitedTiles)
+            }
+        }
 
     }
     fun onLongClick(row: Int, col: Int) {
         _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
             boardRow.mapIndexed { colIndex, tile ->
-                if(rowIndex == row && colIndex == col && tile is TileState.Hidden) {
+                if (rowIndex == row && colIndex == col && tile is TileState.Hidden) {
                     TileState.Hidden(flagged = !tile.flagged)
                 } else {
                     tile
@@ -55,54 +107,36 @@ class PlayViewModel(
             }
         }
     }
+
     private fun initBoard(row: Int, col: Int, numOfBombs: Int) {
         val bombPositions = mutableSetOf<Pair<Int, Int>>()
+
 
         while (bombPositions.size < numOfBombs) {
             bombPositions += Random.nextInt(row) to Random.nextInt(col)
         }
         _boardState.value = List(row) { rowIndex ->
             List(col) { columnIndex ->
-                if (rowIndex to columnIndex in bombPositions) {
+
+                val neighbors = listOf(
+                    rowIndex - 1 to columnIndex - 1,
+                    rowIndex - 1 to columnIndex,
+                    rowIndex - 1 to columnIndex + 1,
+                    rowIndex to columnIndex - 1,
+                    rowIndex to columnIndex + 1,
+                    rowIndex + 1 to columnIndex - 1,
+                    rowIndex + 1 to columnIndex,
+                    rowIndex + 1 to columnIndex + 1
+                )
+                val number = neighbors.count { it in bombPositions }
+                if (number == 0) {
+                    TileState.Revealed.Number(null)
+                } else if (rowIndex to columnIndex in bombPositions) {
                     TileState.Revealed.Mine
                 } else {
-                    var number = 0
-                    if ((columnIndex - 1 to rowIndex + 1 in bombPositions)) {
-                        number++
-                    }
-                    if ((columnIndex + 1 to rowIndex + 1 in bombPositions)) {
-                        number++
-                    }
-                    if ((columnIndex to rowIndex + 1 in bombPositions)) {
-                        number++
-                    }
-                    if ((columnIndex + 1 to rowIndex + 1 in bombPositions)) {
-                        number++
-                    }
-                    if ((columnIndex - 1 to rowIndex in bombPositions)) {
-                        number++
-                    }
-                    if ((columnIndex + 1 to rowIndex in bombPositions)) {
-                        number++
-                    }
-                    if ((columnIndex - 1 to rowIndex - 1 in bombPositions)) {
-                        number++
-                    }
-                    if ((columnIndex to rowIndex - 1 in bombPositions)) {
-                        number++
-                    }
-                    when (number) {
-                        1 -> TileState.Revealed.Number(number)
-                        2 -> TileState.Revealed.Number(number)
-                        3 -> TileState.Revealed.Number(number)
-                        4 -> TileState.Revealed.Number(number)
-                        5 -> TileState.Revealed.Number(number)
-                        6 -> TileState.Revealed.Number(number)
-                        7 -> TileState.Revealed.Number(number)
-                        8 -> TileState.Revealed.Number(number)
-                        else -> TileState.Revealed.Number(null)
-                    }
+                    TileState.Revealed.Number(number)
                 }
+
             }
         }
     }

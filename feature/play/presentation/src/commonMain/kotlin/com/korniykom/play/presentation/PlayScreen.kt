@@ -20,7 +20,8 @@ fun PlayScreen(
         },
         onLongClick = { row, col ->
             viewModel.onLongClick(row, col)
-        }
+        },
+        modifier = modifier
     )
 
 }
