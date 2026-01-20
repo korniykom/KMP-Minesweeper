@@ -22,6 +22,8 @@ kotlin {
             implementation(libs.bundles.koin.compose)
 
             implementation(projects.core.presentation)
+            implementation(projects.core.data)
+            implementation(projects.feature.settings.domain)
 
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)

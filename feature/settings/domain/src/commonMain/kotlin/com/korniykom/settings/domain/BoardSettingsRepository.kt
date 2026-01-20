@@ -1,0 +1,15 @@
+package com.korniykom.settings.domain
+
+import com.korniykom.data.storage.Storage
+import kotlinx.coroutines.flow.Flow
+
+interface BoardSettingsRepository {
+    val cols: Flow<Int>
+    val rows: Flow<Int>
+
+    suspend fun updateCols(colNum: Int)
+    suspend fun updateRows(rowNum: Int)
+
+    data object colsKey : Storage.Key.IntKey("columns", 1)
+    data object rowsKey : Storage.Key.IntKey("rows", 1)
+}

@@ -16,9 +16,18 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(projects.core.domain)
+            implementation(projects.core.data)
             implementation(projects.feature.settings.data)
+            implementation(projects.feature.settings.domain)
 
+            implementation(libs.compose.ui)
+            implementation(libs.compose.components.resources)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.icons.extended)
             implementation(libs.compose.navigation)
+
 
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
@@ -26,7 +35,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(libs.compose.material3)
 
         }
     }

@@ -2,35 +2,27 @@ package com.korniykom.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.korniykom.settings.data.usecases.GetUsernameAsFlowUseCase
-import com.korniykom.settings.data.usecases.UpdateUsernameUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.firstOrNull
+import com.korniykom.data.storage.Storage
+import com.korniykom.settings.domain.BoardSettingsRepository
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    private val getUsernameAsFlowUseCase: GetUsernameAsFlowUseCase,
-    private val updateUsernameUseCase: UpdateUsernameUseCase
+    private val storage: Storage
 ): ViewModel() {
-    private val _username = MutableStateFlow("")
-    val username = _username.asStateFlow()
 
-    init {
+    val colsFlow = storage.getAsFlow(BoardSettingsRepository.colsKey)
+    val rowsFlow = storage.getAsFlow(BoardSettingsRepository.rowsKey)
+
+    fun updateCols(cols: Int) {
         viewModelScope.launch {
-            getUsernameAsFlowUseCase().firstOrNull()?.let {
-                _username.value = it
-            }
+            storage.writeValue(BoardSettingsRepository.colsKey, cols)
         }
     }
 
-    fun save() {
+    fun updateRows(rows: Int) {
         viewModelScope.launch {
-            updateUsernameUseCase(_username.value)
+            storage.writeValue(BoardSettingsRepository.rowsKey, rows)
         }
-    }
-
-    fun setUsername(username: String) {
-        _username.value = username
     }
 }
+
