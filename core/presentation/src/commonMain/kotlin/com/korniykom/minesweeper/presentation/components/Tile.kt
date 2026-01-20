@@ -2,6 +2,7 @@ package com.korniykom.minesweeper.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,12 +34,18 @@ fun Tile(
     state: TileState,
     revealedBorderWidth: Dp,
     hiddenBorderWidth: Dp,
+    onClick: () -> Unit,
+    onLongClick: () -> Unit,
+    modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle(),
-    modifier: Modifier = Modifier
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
             .background(LocalColors.current.background)
             .run {
                 if (state is TileState.Revealed) {
@@ -117,18 +124,18 @@ private fun Modifier.hiddenTile(
     val lightColor = borderLightColor
     val darkColor = borderDarkColor
     val width = size.width
-    val height= size.height
+    val height = size.height
 
     drawPath(
         path = Path().apply {
             moveTo(0f, 0f)
             lineTo(0f, height)
-            lineTo(thicknessPixels, height-thicknessPixels)
+            lineTo(thicknessPixels, height - thicknessPixels)
             lineTo(thicknessPixels, thicknessPixels)
             lineTo(width - thicknessPixels, thicknessPixels)
             lineTo(width, 0f)
         },
-        color =  lightColor
+        color = lightColor
     )
     drawPath(
         path = Path().apply {
@@ -139,7 +146,7 @@ private fun Modifier.hiddenTile(
             lineTo(width - thicknessPixels, height - thicknessPixels)
             lineTo(width - thicknessPixels, thicknessPixels)
         },
-        color =  darkColor
+        color = darkColor
     )
 
 }
@@ -155,7 +162,9 @@ fun TilePreview() {
                 state = state,
                 modifier = Modifier.size(LocalDimensions.current.iconLarge),
                 revealedBorderWidth = 2.dp,
-                hiddenBorderWidth = 4.dp
+                hiddenBorderWidth = 4.dp,
+                onClick = { },
+                onLongClick = { },
             )
         }
     }

@@ -16,7 +16,9 @@ class PlayViewModel(
     private val storage: Storage
 ) : ViewModel() {
     private val _boardState = MutableStateFlow<BoardState>(emptyList())
+    private val _userBoard = MutableStateFlow<BoardState>(emptyList())
     val boardState = _boardState.asStateFlow()
+    val userBoard = _userBoard.asStateFlow()
 
     private val rowsFlow = storage.getAsFlow(BoardSettingsRepository.rowsKey);
     private val colsFlow = storage.getAsFlow(BoardSettingsRepository.colsKey)
@@ -27,9 +29,32 @@ class PlayViewModel(
             val cols = colsFlow.firstOrNull() ?: 10
             val numOfBombs = rows * cols / 10
             initBoard(rows, cols, numOfBombs)
+            initUserBoard(rows, cols)
         }
     }
 
+    fun onClick(row: Int, col: Int) {
+
+    }
+    fun onLongClick(row: Int, col: Int) {
+        _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
+            boardRow.mapIndexed { colIndex, tile ->
+                if(rowIndex == row && colIndex == col && tile is TileState.Hidden) {
+                    TileState.Hidden(flagged = !tile.flagged)
+                } else {
+                    tile
+                }
+            }
+        }
+    }
+
+    private fun initUserBoard(row: Int, col: Int) {
+        _userBoard.value = List(row) {
+            List(col) {
+                TileState.Hidden(flagged = false)
+            }
+        }
+    }
     private fun initBoard(row: Int, col: Int, numOfBombs: Int) {
         val bombPositions = mutableSetOf<Pair<Int, Int>>()
 

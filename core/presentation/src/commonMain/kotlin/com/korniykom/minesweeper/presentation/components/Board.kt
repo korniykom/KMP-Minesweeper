@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -14,13 +13,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 
 typealias BoardState = List<List<TileState>>
 
 @Composable
 fun Board(
+    onClick: (row: Int, col: Int) -> Unit,
+    onLongClick: (row: Int, col: Int) -> Unit,
     tileState: List<List<TileState>>,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle(),
@@ -62,8 +62,10 @@ fun Board(
                             val revealedBorder = tileLength / 32
                             val hiddenBorder = tileLength / 8
                             Tile(
-                                textStyle = sizeAdjustedTextStyle,
                                 state = tileState,
+                                onLongClick = { onLongClick(x, y) },
+                                onClick = { onClick(x, y) },
+                                textStyle = sizeAdjustedTextStyle,
                                 revealedBorderWidth = revealedBorder,
                                 hiddenBorderWidth = hiddenBorder,
                                 modifier = Modifier
@@ -77,39 +79,3 @@ fun Board(
     }
 }
 
-@Preview
-@Composable
-fun BoardPreview() {
-    val allPossibleTileStates = getAllPossibleTilesStates()
-    val tileStates: List<List<TileState>> = buildList {
-        repeat(20) {
-            add(buildList {
-                repeat(15) {
-                    add(allPossibleTileStates.random())
-                }
-            })
-        }
-    }
-    Board(
-        tileState = tileStates,
-        modifier = Modifier
-            .fillMaxSize()
-    )
-}
-
-
-private fun getAllPossibleTilesStates(): Set<TileState> = setOf(
-    TileState.Hidden(flagged = true),
-    TileState.Hidden(flagged = false),
-    TileState.Revealed.Mine,
-    TileState.Revealed.Number(number = null),
-    TileState.Revealed.Number(number = 1),
-    TileState.Revealed.Number(number = 2),
-    TileState.Revealed.Number(number = 3),
-    TileState.Revealed.Number(number = 4),
-    TileState.Revealed.Number(number = 5),
-    TileState.Revealed.Number(number = 6),
-    TileState.Revealed.Number(number = 7),
-    TileState.Revealed.Number(number = 8),
-    TileState.Revealed.Number(number = 9),
-)

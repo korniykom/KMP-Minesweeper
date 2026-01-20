@@ -12,9 +12,15 @@ fun PlayScreen(
     viewModel: PlayViewModel,
     modifier: Modifier = Modifier
 ) {
-    val board by viewModel.boardState.collectAsState()
+    val board by viewModel.userBoard.collectAsState()
     Board(
-        tileState = board
+        tileState = board,
+        onClick = {row, col ->
+            viewModel.onClick(row, col)
+        },
+        onLongClick = { row, col ->
+            viewModel.onLongClick(row, col)
+        }
     )
 
 }
