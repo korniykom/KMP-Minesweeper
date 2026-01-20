@@ -26,6 +26,7 @@ kotlin {
             implementation(projects.feature.menu.presentation)
             implementation(projects.feature.settings.data)
             implementation(projects.feature.settings.presentation)
+            implementation(projects.feature.play.presentation)
 
 
             implementation(libs.koin.core)

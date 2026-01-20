@@ -1,4 +1,4 @@
-package com.korniykom.presentation
+package com.korniykom.minesweeper.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+
+typealias BoardState = List<List<TileState>>
 
 @Composable
 fun Board(

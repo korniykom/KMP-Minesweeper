@@ -1,0 +1,19 @@
+package com.korniykom.play.presentation
+
+import kotlinx.serialization.Serializable
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
+import org.koin.compose.viewmodel.koinViewModel
+
+
+@Serializable
+data object Play
+
+fun NavGraphBuilder.playRoutes() {
+    composable<Play> {
+        val viewModel: PlayViewModel = koinViewModel()
+        PlayScreen(
+            viewModel = viewModel
+        )
+    }
+}

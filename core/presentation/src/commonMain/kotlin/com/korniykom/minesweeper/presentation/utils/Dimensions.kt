@@ -1,4 +1,4 @@
-package com.korniykom.minesweeper.presentation
+package com.korniykom.minesweeper.presentation.utils
 
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp

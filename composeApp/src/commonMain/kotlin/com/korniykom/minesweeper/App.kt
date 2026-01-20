@@ -7,9 +7,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.korniykom.presentation.Highscores
 import com.korniykom.presentation.Menu
+import com.korniykom.play.presentation.Play
 import com.korniykom.settings.presentation.Settings
 import com.korniykom.presentation.highscoresRoutes
 import com.korniykom.presentation.menuRoutes
+import com.korniykom.play.presentation.playRoutes
 import com.korniykom.settings.presentation.settingsRoutes
 import org.koin.compose.KoinApplication
 import org.koin.core.module.Module
@@ -32,7 +34,7 @@ fun App(
                 startDestination = Menu
             ) {
                 menuRoutes(
-                    goToPlay = {},
+                    goToPlay = {navController.navigate(Play)},
                     goToHighScore = {
                         navController.navigate(Highscores)
                     },
@@ -42,6 +44,7 @@ fun App(
                 )
                 highscoresRoutes()
                 settingsRoutes()
+                playRoutes()
             }
         }
     }

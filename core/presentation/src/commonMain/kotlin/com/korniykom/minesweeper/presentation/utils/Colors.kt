@@ -1,4 +1,4 @@
-package com.korniykom.minesweeper.presentation
+package com.korniykom.minesweeper.presentation.utils
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.compositionLocalOf

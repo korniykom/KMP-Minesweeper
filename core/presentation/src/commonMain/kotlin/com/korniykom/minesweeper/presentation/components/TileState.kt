@@ -1,4 +1,4 @@
-package com.korniykom.presentation
+package com.korniykom.minesweeper.presentation.components
 
 sealed class TileState {
     data class Hidden(val flagged: Boolean): TileState()

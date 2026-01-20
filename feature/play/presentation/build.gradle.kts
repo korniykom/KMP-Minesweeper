@@ -3,6 +3,7 @@ plugins {
     id("com.korniykom.convention.android.library")
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -16,6 +17,10 @@ kotlin {
 
         }
         commonMain.dependencies {
+
+            implementation(libs.koin.core)
+            implementation(libs.bundles.koin.compose)
+
             implementation(projects.core.presentation)
 
             implementation(libs.compose.ui)
@@ -24,6 +29,7 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.compose.material3)
             implementation(libs.compose.icons.extended)
+            implementation(libs.compose.navigation)
 
 
         }
