@@ -7,7 +7,7 @@ import java.io.File
 fun createDataStore(): DataStore<Preferences> {
     val parentFolder = File(System.getProperty("user.dir"))
 
-    if(!parentFolder.exists()) {
+    if (!parentFolder.exists()) {
         parentFolder.mkdirs()
     }
 

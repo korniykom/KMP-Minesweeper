@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 
 class UsernameRepositoryImpl(
     private val storage: Storage
-): UsernameRepository {
+) : UsernameRepository {
     override val username: Flow<String> = storage.getAsFlow(UsernameRepository.UsernameKey)
         .map { it.orEmpty() }
 

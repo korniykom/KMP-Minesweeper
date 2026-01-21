@@ -7,12 +7,11 @@ import kotlinx.coroutines.flow.map
 
 class BoardSettingsRepositoryImpl(
     private val storage: Storage
-) : BoardSettingsRepository
-{
+) : BoardSettingsRepository {
     override val cols: Flow<Int> = storage.getAsFlow(BoardSettingsRepository.colsKey)
-        .map { it ?: 10  }
+        .map { it ?: 10 }
     override val rows: Flow<Int> = storage.getAsFlow(BoardSettingsRepository.rowsKey)
-        .map { it ?: 10  }
+        .map { it ?: 10 }
 
     override suspend fun updateCols(colNum: Int) {
         storage.writeValue(BoardSettingsRepository.colsKey, colNum)

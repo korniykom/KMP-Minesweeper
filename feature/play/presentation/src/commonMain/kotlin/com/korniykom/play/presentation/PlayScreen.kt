@@ -44,7 +44,7 @@ fun PlayScreen(
             remainingSeconds = remainingSeconds.toString(),
             onRestartClick = viewModel::resetBoard
         )
-        if (correctlyCheckedBombs == bombsOnField || hiddenTiles == bombsOnField  ) {
+        if (hiddenTiles == bombsOnField) {
             viewModel.stopTimer()
             AlertDialog(
                 onDismissRequest = {},

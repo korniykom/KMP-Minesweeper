@@ -9,6 +9,6 @@ interface UsernameRepository {
 
     suspend fun updateUsername(username: String)
 
-    data object UsernameKey: Storage.Key.StringKey("username", "Anonymous")
+    data object UsernameKey : Storage.Key.StringKey("username", "Anonymous")
 
 }

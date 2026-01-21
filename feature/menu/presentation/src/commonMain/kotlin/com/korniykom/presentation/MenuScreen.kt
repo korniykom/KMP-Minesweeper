@@ -14,8 +14,7 @@ import com.korniykom.minesweeper.presentation.utils.LocalPadding
 
 @Composable
 internal fun MenuScreen(
-    goToPlay:() -> Unit,
-    goToHighScore: () -> Unit,
+    goToPlay: () -> Unit,
     goToSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -32,11 +31,6 @@ internal fun MenuScreen(
         MenuButton(
             buttonText = "PLAY",
             onClick = goToPlay,
-            modifier = buttonModifier
-        )
-        MenuButton(
-            buttonText = "HIGHSCORES",
-            onClick = goToHighScore,
             modifier = buttonModifier
         )
         MenuButton(

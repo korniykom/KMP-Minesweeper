@@ -6,9 +6,9 @@ import androidx.datastore.preferences.core.Preferences
 import okio.Path.Companion.toPath
 
 fun createDataStore(
-    producePath:() -> String
+    producePath: () -> String
 ): DataStore<Preferences> = PreferenceDataStoreFactory.createWithPath(
-    produceFile = { producePath().toPath()}
+    produceFile = { producePath().toPath() }
 )
 
 const val dataStoreFileName = "minesweeper_game.preferences_pb"

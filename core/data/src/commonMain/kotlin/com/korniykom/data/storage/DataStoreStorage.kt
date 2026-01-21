@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 
 class DataStoreStorage(
     private val dataStore: DataStore<Preferences>
-): Storage {
+) : Storage {
     override fun <T> getAsFlow(key: Storage.Key<T>): Flow<T?> {
         return dataStore.data.map { preferences ->
             preferences[getDataStoreKey(key)] ?: key.defaultValue
@@ -29,7 +29,7 @@ class DataStoreStorage(
     override suspend fun <T> writeValue(key: Storage.Key<T>, value: T?) {
         dataStore.edit { preferences ->
             val dataStoreKey = getDataStoreKey(key)
-            if(value == null) {
+            if (value == null) {
                 preferences.remove(dataStoreKey)
             } else {
                 preferences[dataStoreKey] = value
@@ -38,7 +38,7 @@ class DataStoreStorage(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun <T> getDataStoreKey(key: Storage.Key<T>) : Preferences.Key<T> = when(key) {
+    private fun <T> getDataStoreKey(key: Storage.Key<T>): Preferences.Key<T> = when (key) {
         is Storage.Key.BooleanKey -> booleanPreferencesKey(key.name)
         is Storage.Key.DoubleKey -> doublePreferencesKey(key.name)
         is Storage.Key.FloatKey -> floatPreferencesKey(key.name)

@@ -14,5 +14,4 @@ interface BoardSettingsRepository {
     data object rowsKey : Storage.Key.IntKey("rows", 10)
 
 
-
 }

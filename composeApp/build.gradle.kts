@@ -1,6 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -22,12 +20,10 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.presentation)
             implementation(projects.core.data)
-            implementation(projects.feature.highscore.presentation)
             implementation(projects.feature.menu.presentation)
             implementation(projects.feature.settings.data)
             implementation(projects.feature.settings.presentation)
             implementation(projects.feature.play.presentation)
-            implementation(projects.feature.highscore.data)
 
 
             implementation(libs.koin.core)
@@ -40,7 +36,6 @@ kotlin {
             implementation(libs.compose.navigation)
 
             implementation(libs.datastore.preferences.core)
-
 
 
         }

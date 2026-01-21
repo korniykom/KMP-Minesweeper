@@ -5,13 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.korniykom.presentation.Highscores
-import com.korniykom.presentation.Menu
 import com.korniykom.play.presentation.Play
-import com.korniykom.settings.presentation.Settings
-import com.korniykom.presentation.highscoresRoutes
-import com.korniykom.presentation.menuRoutes
 import com.korniykom.play.presentation.playRoutes
+import com.korniykom.presentation.Menu
+import com.korniykom.presentation.menuRoutes
+import com.korniykom.settings.presentation.Settings
 import com.korniykom.settings.presentation.settingsRoutes
 import org.koin.compose.KoinApplication
 import org.koin.core.module.Module
@@ -35,18 +33,15 @@ fun App(
             ) {
                 menuRoutes(
                     goToPlay = { navController.navigate(Play) },
-                    goToHighScore = {
-                        navController.navigate(Highscores)
-                    },
                     goToSettings = {
                         navController.navigate(Settings)
                     }
                 )
-                highscoresRoutes()
                 settingsRoutes()
                 playRoutes(
-                    navigateToMenu = { navController.navigate(Menu)
-                })
+                    navigateToMenu = {
+                        navController.navigate(Menu)
+                    })
             }
         }
     }

@@ -15,12 +15,15 @@ interface Storage {
         val name: String,
         val defaultValue: T?
     ) {
-        open class StringKey(name: String, defaultValue: String?): Key<String>(name, defaultValue)
-        open class IntKey(name: String, defaultValue: Int?): Key<Int>(name, defaultValue)
-        open class FloatKey(name: String, defaultValue: Float?): Key<Float>(name, defaultValue)
-        open class LongKey(name: String, defaultValue: Long?): Key<Long>(name, defaultValue)
-        open class DoubleKey(name: String, defaultValue: Double?): Key<Double>(name, defaultValue)
-        open class BooleanKey(name: String, defaultValue: Boolean?): Key<Boolean>(name, defaultValue)
-        open class ListKey(name: String, defaultValue: List<Pair<String,String>>?): Key<List<Pair<String,String>>>(name, defaultValue)
+        open class StringKey(name: String, defaultValue: String?) : Key<String>(name, defaultValue)
+        open class IntKey(name: String, defaultValue: Int?) : Key<Int>(name, defaultValue)
+        open class FloatKey(name: String, defaultValue: Float?) : Key<Float>(name, defaultValue)
+        open class LongKey(name: String, defaultValue: Long?) : Key<Long>(name, defaultValue)
+        open class DoubleKey(name: String, defaultValue: Double?) : Key<Double>(name, defaultValue)
+        open class BooleanKey(name: String, defaultValue: Boolean?) :
+            Key<Boolean>(name, defaultValue)
+
+        open class ListKey(name: String, defaultValue: List<Pair<String, String>>?) :
+            Key<List<Pair<String, String>>>(name, defaultValue)
     }
 }

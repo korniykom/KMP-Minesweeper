@@ -10,14 +10,12 @@ import kotlinx.serialization.Serializable
 data object Menu
 
 fun NavGraphBuilder.menuRoutes(
-    goToPlay:() -> Unit,
-    goToHighScore: () -> Unit,
+    goToPlay: () -> Unit,
     goToSettings: () -> Unit,
 ) {
     composable<Menu> {
         MenuScreen(
             goToPlay = goToPlay,
-            goToHighScore = goToHighScore,
             goToSettings = goToSettings,
             modifier = Modifier.fillMaxSize()
         )

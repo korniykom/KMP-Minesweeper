@@ -1,8 +1,8 @@
 package com.korniykom.play.presentation
 
-import kotlinx.serialization.Serializable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 
 

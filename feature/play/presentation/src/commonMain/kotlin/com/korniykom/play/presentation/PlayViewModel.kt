@@ -1,10 +1,8 @@
 package com.korniykom.play.presentation
 
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.korniykom.data.storage.Storage
-import com.korniykom.highscores.domain.HighscoresRepository
 import com.korniykom.minesweeper.presentation.components.BoardState
 import com.korniykom.minesweeper.presentation.components.TileState
 import com.korniykom.settings.domain.BoardSettingsRepository
@@ -60,21 +58,12 @@ class PlayViewModel(
         stopTimer()
     }
 
-    fun addRecordToHighscores(time: Int, row: Int, col: Int) {
-        viewModelScope.launch {
-            val currentRecordsFlow = storage.getAsFlow(HighscoresRepository.highScore)
-            var currentRecords  = currentRecordsFlow.firstOrNull() ?: emptyList()
-            currentRecords = currentRecords + (time.toString() to "${row}x${col}")
-
-            storage.writeValue(HighscoresRepository.highScore, currentRecords)
-        }
-    }
 
     private suspend fun resetBoardSuspend() {
         val rows = rowsFlow.firstOrNull() ?: 10
         val cols = colsFlow.firstOrNull() ?: 10
         _bombNumber.update { rows * cols / 5 }
-        if(_bombNumber.value < 1) {
+        if (_bombNumber.value < 1) {
             _bombNumber.update { 1 }
         }
         initBoard(rows, cols, bombNumber.value)
@@ -88,7 +77,7 @@ class PlayViewModel(
             val cols = colsFlow.firstOrNull() ?: 10
             _boardSize.update { rows * cols }
             _bombNumber.update { rows * cols / 10 }
-            if(_bombNumber.value < 1) {
+            if (_bombNumber.value < 1) {
                 _bombNumber.update { 1 }
             }
             initBoard(rows, cols, bombNumber.value)
@@ -185,7 +174,7 @@ class PlayViewModel(
             var hiddenTiles = 0
             _userBoard.value.mapIndexed { rowIndex, boardRow ->
                 boardRow.mapIndexed { colIndex, tile ->
-                    if(tile is TileState.Hidden) {
+                    if (tile is TileState.Hidden) {
                         hiddenTiles++
                     }
                 }

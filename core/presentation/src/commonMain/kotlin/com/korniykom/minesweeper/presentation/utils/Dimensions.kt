@@ -4,7 +4,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-data class Dimensions (
+data class Dimensions(
     val viewTiny: Dp = 40.dp,
     val viewSmall: Dp = 48.dp,
     val viewNormal: Dp = 56.dp,

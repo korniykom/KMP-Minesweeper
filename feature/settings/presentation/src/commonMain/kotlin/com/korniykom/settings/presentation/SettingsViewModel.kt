@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 class SettingsViewModel(
     private val storage: Storage
-): ViewModel() {
+) : ViewModel() {
 
     val colsFlow = storage.getAsFlow(BoardSettingsRepository.colsKey)
     val rowsFlow = storage.getAsFlow(BoardSettingsRepository.rowsKey)
