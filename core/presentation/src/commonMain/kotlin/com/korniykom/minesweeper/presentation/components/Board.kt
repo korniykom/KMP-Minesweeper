@@ -19,6 +19,9 @@ typealias BoardState = List<List<TileState>>
 
 @Composable
 fun Board(
+    emoji: String,
+    remainingBombs: String,
+    remainingSeconds: String,
     onClick: (row: Int, col: Int) -> Unit,
     onLongClick: (row: Int, col: Int) -> Unit,
     tileState: List<List<TileState>>,
@@ -26,8 +29,8 @@ fun Board(
     textStyle: TextStyle = TextStyle(),
 ) {
     if (tileState.isNotEmpty()) {
-        val boardHeight = remember { tileState.first().size }
-        val boardWidth = remember { tileState.size }
+        val boardWidth = remember { tileState.first().size }
+        val boardHeight = remember { tileState.size }
         BoxWithConstraints(
             contentAlignment = Alignment.Center,
             modifier = modifier
@@ -43,6 +46,20 @@ fun Board(
             val sizeAdjustedTextStyle = textStyle.copy(
                 fontSize = tileLength.value.sp * 0.8
             )
+
+            Column(
+                modifier = Modifier.width(
+                    minOf(
+                        maxWidth,
+                        maxHeight * (boardWidth / boardHeight.toFloat())
+                    )
+                )
+            ) {
+                HeaderRow(
+                    remainingSeconds = remainingSeconds,
+                    remainingBombs = remainingBombs,
+                    emoji = emoji,
+                )
 
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -74,6 +91,7 @@ fun Board(
                             )
                         }
                     }
+            }
             }
         }
     }
