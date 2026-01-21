@@ -1,6 +1,5 @@
 package com.korniykom.play.presentation
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.korniykom.data.storage.Storage
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Collections.emptySet
 import kotlin.random.Random
 
 class PlayViewModel(
@@ -23,10 +21,12 @@ class PlayViewModel(
     private val _boardState = MutableStateFlow<BoardState>(emptyList())
     private val _userBoard = MutableStateFlow<BoardState>(emptyList())
     private val _bombNumber = MutableStateFlow<Int>(-1)
-    private val _bombChecked = MutableStateFlow<Int>(-1)
+    private val _bombChecked = MutableStateFlow<Int>(0)
     private val _correctlyCheckedBombs = MutableStateFlow(0)
     private val _playerExploded = MutableStateFlow(false)
     private val _restartButtonState = MutableStateFlow("\uD83D\uDE0E")
+    private val _isFirstClick = MutableStateFlow(true)
+    val isFirstClick = _isFirstClick.asStateFlow()
     val restartButtonState = _restartButtonState.asStateFlow()
     val playerExploded = _playerExploded.asStateFlow()
     val boardState = _boardState.asStateFlow()
@@ -53,22 +53,39 @@ class PlayViewModel(
         stopTimer()
     }
 
+
+    private suspend fun resetBoardSuspend() {
+        val rows = rowsFlow.firstOrNull() ?: 10
+        val cols = colsFlow.firstOrNull() ?: 10
+        _bombNumber.update { rows * cols / 10 }
+        if(_bombNumber.value < 1) {
+            _bombNumber.update { 1 }
+        }
+        initBoard(rows, cols, bombNumber.value)
+        initUserBoard(rows, cols)
+        _isFirstClick.update { true }
+    }
+
     fun resetBoard() {
         viewModelScope.launch {
             val rows = rowsFlow.firstOrNull() ?: 10
             val cols = colsFlow.firstOrNull() ?: 10
             _bombNumber.update { rows * cols / 10 }
+            if(_bombNumber.value < 1) {
+                _bombNumber.update { 1 }
+            }
             initBoard(rows, cols, bombNumber.value)
             initUserBoard(rows, cols)
         }
+        _isFirstClick.update { true }
         resetTimer()
     }
 
     fun explodePlayer() {
         _playerExploded.update { true }
         _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
-            boardRow.mapIndexed{ colIndex, tile ->
-                if(_boardState.value[rowIndex][colIndex] is TileState.Revealed.Mine) {
+            boardRow.mapIndexed { colIndex, tile ->
+                if (_boardState.value[rowIndex][colIndex] is TileState.Revealed.Mine) {
                     TileState.Revealed.Mine
                 } else {
                     tile
@@ -89,14 +106,14 @@ class PlayViewModel(
 
     fun onGetFlagged(row: Int, col: Int) {
         _bombChecked.update { it + 1 }
-        if(boardState.value[row][col] is TileState.Revealed.Mine) {
+        if (boardState.value[row][col] is TileState.Revealed.Mine) {
             _correctlyCheckedBombs.update { it + 1 }
         }
     }
 
     fun onGetUnFlagged(row: Int, col: Int) {
         _bombChecked.update { it - 1 }
-        if(boardState.value[row][col] is TileState.Revealed.Mine) {
+        if (boardState.value[row][col] is TileState.Revealed.Mine) {
             _correctlyCheckedBombs.update { it - 1 }
         }
     }
@@ -110,41 +127,85 @@ class PlayViewModel(
     }
 
     fun onClick(row: Int, col: Int) {
-        val currentRealTile = _boardState.value[row][col]
-        val currentUserTile = _userBoard.value[row][col]
-        if(currentRealTile is TileState.Revealed.Mine) {
-            explodePlayer()
-        }
-        else if (currentRealTile is TileState.Revealed.Number && currentRealTile.number == null) {
-            recursivelyRevealEmptyTiles(row, col)
-        } else if(currentUserTile is TileState.Revealed.Number) {
-            val neighbors = listOf(
-                row - 1 to col - 1,
-                row - 1 to col,
-                row - 1 to col + 1,
-                row to col - 1,
-                row to col + 1,
-                row + 1 to col - 1,
-                row + 1 to col,
-                row + 1 to col + 1
-            )
+        if (_playerExploded.value) return
+        val currentRealTile = _boardState.value.getOrNull(row)?.getOrNull(col) ?: return
+        val currentUserTile = _userBoard.value.getOrNull(row)?.getOrNull(col) ?: return
+        if (isFirstClick.value) {
+            _isFirstClick.update { false }
 
-            neighbors.forEach { (r, c) ->
-                recursivelyRevealEmptyTiles(r, c)
+            if (currentRealTile is TileState.Revealed.Mine) {
+                viewModelScope.launch {
+                    resetBoardSuspend()
+                    onClick(row, col)
+                }
+                return
             }
-        } else {
+            if (currentRealTile is TileState.Revealed.Number && currentRealTile.number == null) {
+                recursivelyRevealEmptyTiles(row, col)
+                return
+            }
+            if (currentRealTile is TileState.Revealed.Number && currentRealTile.number != null) {
+                val neighbours = neighbors(row, col)
+                neighbours.forEach { (row, col) ->
+                    recursivelyRevealEmptyTiles(row, col)
+                }
+                return
+            }
             _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
                 boardRow.mapIndexed { colIndex, tile ->
-                    if (row == rowIndex && col == colIndex) {
-                        _boardState.value[row][col]
-                    } else {
-                        tile
+                    if (rowIndex == row && colIndex == col) currentRealTile else tile
+                }
+            }
+            return
+        }
+        if (currentRealTile is TileState.Revealed.Mine) {
+            explodePlayer()
+            return
+        }
+        if (currentRealTile is TileState.Revealed.Number && currentRealTile.number == null) {
+            recursivelyRevealEmptyTiles(row, col)
+            return
+        }
+        if (currentUserTile is TileState.Revealed.Number && currentRealTile is TileState.Revealed.Number && currentRealTile.number != null) {
+            val neighbors = neighbors(row, col)
+            val flaggedCount = neighbors.count { (r, c) ->
+                r in _userBoard.value.indices &&
+                        c in _userBoard.value.first().indices &&
+                        (_userBoard.value[r][c] as? TileState.Hidden)?.flagged == true
+            }
+            if (flaggedCount == currentRealTile.number) {
+                neighbors.forEach { (r, c) ->
+                    if (r in _boardState.value.indices && c in _boardState.value.first().indices) {
+                        val neighborUserTile = _userBoard.value[r][c]
+                        val neighborRealTile = _boardState.value[r][c]
+
+                        if (neighborUserTile is TileState.Hidden && !neighborUserTile.flagged) {
+                            if (neighborRealTile is TileState.Revealed.Mine) {
+                                explodePlayer()
+                            } else if (neighborRealTile is TileState.Revealed.Number && neighborRealTile.number == null) {
+                                recursivelyRevealEmptyTiles(r, c)
+                            } else {
+                                _userBoard.value =
+                                    _userBoard.value.mapIndexed { rowIndex, boardRow ->
+                                        boardRow.mapIndexed { colIndex, tile ->
+                                            if (rowIndex == r && colIndex == c) neighborRealTile else tile
+                                        }
+                                    }
+                            }
+                        }
                     }
+                }
+            }
+            return
+        }
+        if (currentUserTile is TileState.Hidden) {
+            _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
+                boardRow.mapIndexed { colIndex, tile ->
+                    if (rowIndex == row && colIndex == col) currentRealTile else tile
                 }
             }
         }
     }
-
 
     private fun recursivelyRevealEmptyTiles(
         row: Int,
@@ -173,16 +234,7 @@ class PlayViewModel(
         }
 
         if (realTile is TileState.Revealed.Number && realTile.number == null) {
-            val neighbors = listOf(
-                row - 1 to col - 1,
-                row - 1 to col,
-                row - 1 to col + 1,
-                row to col - 1,
-                row to col + 1,
-                row + 1 to col - 1,
-                row + 1 to col,
-                row + 1 to col + 1
-            )
+            val neighbors = neighbors(row, col)
             neighbors.forEach { (row, col) ->
                 recursivelyRevealEmptyTiles(row, col, visitedTiles)
             }
@@ -225,16 +277,7 @@ class PlayViewModel(
         _boardState.value = List(row) { rowIndex ->
             List(col) { columnIndex ->
 
-                val neighbors = listOf(
-                    rowIndex - 1 to columnIndex - 1,
-                    rowIndex - 1 to columnIndex,
-                    rowIndex - 1 to columnIndex + 1,
-                    rowIndex to columnIndex - 1,
-                    rowIndex to columnIndex + 1,
-                    rowIndex + 1 to columnIndex - 1,
-                    rowIndex + 1 to columnIndex,
-                    rowIndex + 1 to columnIndex + 1
-                )
+                val neighbors = neighbors(rowIndex, columnIndex)
                 val number = neighbors.count { it in bombPositions }
                 if (rowIndex to columnIndex in bombPositions) {
                     TileState.Revealed.Mine
@@ -247,4 +290,16 @@ class PlayViewModel(
             }
         }
     }
+
+    fun neighbors(row: Int, col: Int): Set<Pair<Int, Int>> =
+        setOf(
+            row - 1 to col - 1,
+            row - 1 to col,
+            row - 1 to col + 1,
+            row to col - 1,
+            row to col + 1,
+            row + 1 to col - 1,
+            row + 1 to col,
+            row + 1 to col + 1
+        )
 }

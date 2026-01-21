@@ -19,6 +19,7 @@ fun PlayScreen(
     modifier: Modifier = Modifier
 ) {
     val board by viewModel.userBoard.collectAsState()
+    val realBoard by viewModel.boardState.collectAsState()
     val remainingSeconds by viewModel.remainTimerSeconds.collectAsState()
     val bombsOnField by viewModel.bombNumber.collectAsState()
     val bombChecked by viewModel.bombChecked.collectAsState()
@@ -40,7 +41,6 @@ fun PlayScreen(
             remainingSeconds = remainingSeconds.toString(),
             onRestartClick = viewModel::resetBoard
         )
-
         if (correctlyCheckedBombs == bombsOnField) {
             AlertDialog(
                 onDismissRequest = {},
