@@ -34,7 +34,7 @@ fun App(
                 startDestination = Menu
             ) {
                 menuRoutes(
-                    goToPlay = {navController.navigate(Play)},
+                    goToPlay = { navController.navigate(Play) },
                     goToHighScore = {
                         navController.navigate(Highscores)
                     },
@@ -44,7 +44,9 @@ fun App(
                 )
                 highscoresRoutes()
                 settingsRoutes()
-                playRoutes()
+                playRoutes(
+                    navigateToMenu = { navController.navigate(Menu)
+                })
             }
         }
     }

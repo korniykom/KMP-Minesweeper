@@ -9,11 +9,14 @@ import org.koin.compose.viewmodel.koinViewModel
 @Serializable
 data object Play
 
-fun NavGraphBuilder.playRoutes() {
+fun NavGraphBuilder.playRoutes(
+    navigateToMenu: () -> Unit
+) {
     composable<Play> {
         val viewModel: PlayViewModel = koinViewModel()
         PlayScreen(
-            viewModel = viewModel
+            viewModel = viewModel,
+            navigateToMenu = navigateToMenu
         )
     }
 }

@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Collections.emptySet
 import kotlin.random.Random
 
 class PlayViewModel(
@@ -21,14 +22,16 @@ class PlayViewModel(
 ) : ViewModel() {
     private val _boardState = MutableStateFlow<BoardState>(emptyList())
     private val _userBoard = MutableStateFlow<BoardState>(emptyList())
-    private val _bombNumber = MutableStateFlow<Int>(0)
-    private val _bombChecked = MutableStateFlow<Int>(0)
+    private val _bombNumber = MutableStateFlow<Int>(-1)
+    private val _bombChecked = MutableStateFlow<Int>(-1)
+    private val _correctlyCheckedBombs = MutableStateFlow(0)
     val boardState = _boardState.asStateFlow()
     val userBoard = _userBoard.asStateFlow()
     val bombNumber = _bombNumber.asStateFlow()
     val bombChecked = _bombChecked.asStateFlow()
+    val correctlyCheckedBombs = _correctlyCheckedBombs.asStateFlow()
 
-    private  val countDownStartSeconds = 999
+    private val countDownStartSeconds = 999
 
     private val _remainTimerSeconds = MutableStateFlow(countDownStartSeconds)
     val remainTimerSeconds = _remainTimerSeconds.asStateFlow()
@@ -57,12 +60,18 @@ class PlayViewModel(
         }
     }
 
-    fun onGetFlagged() {
+    fun onGetFlagged(row: Int, col: Int) {
         _bombChecked.update { it + 1 }
+        if(boardState.value[row][col] is TileState.Revealed.Mine) {
+            _correctlyCheckedBombs.update { it + 1 }
+        }
     }
 
-    fun onGetUnFlagged() {
+    fun onGetUnFlagged(row: Int, col: Int) {
         _bombChecked.update { it - 1 }
+        if(boardState.value[row][col] is TileState.Revealed.Mine) {
+            _correctlyCheckedBombs.update { it - 1 }
+        }
     }
 
     private fun stopTimer() {
@@ -78,6 +87,21 @@ class PlayViewModel(
         val currentUserTile = _userBoard.value[row][col]
         if (currentRealTile is TileState.Revealed.Number && currentRealTile.number == null) {
             recursivelyRevealEmptyTiles(row, col)
+        } else if(currentUserTile is TileState.Revealed.Number) {
+            val neighbors = listOf(
+                row - 1 to col - 1,
+                row - 1 to col,
+                row - 1 to col + 1,
+                row to col - 1,
+                row to col + 1,
+                row + 1 to col - 1,
+                row + 1 to col,
+                row + 1 to col + 1
+            )
+
+            neighbors.forEach { (r, c) ->
+                recursivelyRevealEmptyTiles(r, c)
+            }
         } else {
             _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
                 boardRow.mapIndexed { colIndex, tile ->
@@ -90,6 +114,7 @@ class PlayViewModel(
             }
         }
     }
+
 
     private fun recursivelyRevealEmptyTiles(
         row: Int,
@@ -133,14 +158,15 @@ class PlayViewModel(
 
     }
 
+
     fun onLongClick(row: Int, col: Int) {
         _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
             boardRow.mapIndexed { colIndex, tile ->
                 if (rowIndex == row && colIndex == col && tile is TileState.Hidden) {
-                    if(tile.flagged) {
-                        onGetUnFlagged()
+                    if (tile.flagged) {
+                        onGetUnFlagged(rowIndex, colIndex)
                     } else {
-                        onGetFlagged()
+                        onGetFlagged(rowIndex, colIndex)
                     }
                     TileState.Hidden(flagged = !tile.flagged)
                 } else {
@@ -161,7 +187,6 @@ class PlayViewModel(
     private fun initBoard(row: Int, col: Int, numOfBombs: Int) {
         val bombPositions = mutableSetOf<Pair<Int, Int>>()
 
-
         while (bombPositions.size < numOfBombs) {
             bombPositions += Random.nextInt(row) to Random.nextInt(col)
         }
@@ -179,10 +204,10 @@ class PlayViewModel(
                     rowIndex + 1 to columnIndex + 1
                 )
                 val number = neighbors.count { it in bombPositions }
-                if (number == 0) {
-                    TileState.Revealed.Number(null)
-                } else if (rowIndex to columnIndex in bombPositions) {
+                if (rowIndex to columnIndex in bombPositions) {
                     TileState.Revealed.Mine
+                } else if (number == 0) {
+                    TileState.Revealed.Number(null)
                 } else {
                     TileState.Revealed.Number(number)
                 }

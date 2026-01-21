@@ -2,6 +2,9 @@ package com.korniykom.play.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -12,6 +15,7 @@ import com.korniykom.minesweeper.presentation.components.Board
 @Composable
 fun PlayScreen(
     viewModel: PlayViewModel,
+    navigateToMenu: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val board by viewModel.userBoard.collectAsState()
@@ -19,6 +23,7 @@ fun PlayScreen(
     val bombsOnField by viewModel.bombNumber.collectAsState()
     val bombChecked by viewModel.bombChecked.collectAsState()
     val remainingBombs = bombsOnField - bombChecked
+    val correctlyCheckedBombs by viewModel.correctlyCheckedBombs.collectAsState()
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -31,6 +36,23 @@ fun PlayScreen(
             remainingBombs = remainingBombs.toString(),
             remainingSeconds = remainingSeconds.toString()
         )
+
+        if(correctlyCheckedBombs == bombsOnField) {
+            AlertDialog(
+                onDismissRequest = {},
+                title = { Text("🎉 You Win!") },
+                text = { Text("Congratulations!") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            navigateToMenu()
+                        }
+                    ) {
+                        Text("Go to menu")
+                    }
+                }
+            )
+        }
     }
 
 }
