@@ -24,6 +24,7 @@ fun PlayScreen(
     val bombChecked by viewModel.bombChecked.collectAsState()
     val remainingBombs = bombsOnField - bombChecked
     val correctlyCheckedBombs by viewModel.correctlyCheckedBombs.collectAsState()
+    val userExploded by viewModel.playerExploded.collectAsState()
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -37,16 +38,31 @@ fun PlayScreen(
             remainingSeconds = remainingSeconds.toString()
         )
 
-        if(correctlyCheckedBombs == bombsOnField) {
+        if (correctlyCheckedBombs == bombsOnField) {
             AlertDialog(
                 onDismissRequest = {},
-                title = { Text("🎉 You Win!") },
+                title = { Text("You Won") },
                 text = { Text("Congratulations!") },
                 confirmButton = {
                     Button(
                         onClick = {
                             navigateToMenu()
                         }
+                    ) {
+                        Text("Go to menu")
+                    }
+                }
+            )
+        }
+
+        if (userExploded) {
+            AlertDialog(
+                onDismissRequest = navigateToMenu,
+                title = { Text("You Lost") },
+                text = { Text("Loser") },
+                confirmButton = {
+                    Button(
+                        onClick = navigateToMenu
                     ) {
                         Text("Go to menu")
                     }

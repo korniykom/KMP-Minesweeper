@@ -25,6 +25,8 @@ class PlayViewModel(
     private val _bombNumber = MutableStateFlow<Int>(-1)
     private val _bombChecked = MutableStateFlow<Int>(-1)
     private val _correctlyCheckedBombs = MutableStateFlow(0)
+    private val _playerExploded = MutableStateFlow(false)
+    val playerExploded = _playerExploded.asStateFlow()
     val boardState = _boardState.asStateFlow()
     val userBoard = _userBoard.asStateFlow()
     val bombNumber = _bombNumber.asStateFlow()
@@ -48,6 +50,10 @@ class PlayViewModel(
             initUserBoard(rows, cols)
         }
         startTimer()
+    }
+
+    fun explodePlayer() {
+        _playerExploded.update { true }
     }
 
     private fun startTimer() {
@@ -85,7 +91,10 @@ class PlayViewModel(
     fun onClick(row: Int, col: Int) {
         val currentRealTile = _boardState.value[row][col]
         val currentUserTile = _userBoard.value[row][col]
-        if (currentRealTile is TileState.Revealed.Number && currentRealTile.number == null) {
+        if(currentRealTile is TileState.Revealed.Mine) {
+            explodePlayer()
+        }
+        else if (currentRealTile is TileState.Revealed.Number && currentRealTile.number == null) {
             recursivelyRevealEmptyTiles(row, col)
         } else if(currentUserTile is TileState.Revealed.Number) {
             val neighbors = listOf(
