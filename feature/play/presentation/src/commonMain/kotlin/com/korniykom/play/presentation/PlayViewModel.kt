@@ -83,7 +83,7 @@ class PlayViewModel(
                 row + 1 to col + 1
             )
             neighbors.forEach { (row, col) ->
-                recursivelyReviewEmptyTiles(row, col, visitedTiles)
+                recursivelyRevealEmptyTiles(row, col, visitedTiles)
             }
         }
 
