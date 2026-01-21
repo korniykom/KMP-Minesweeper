@@ -1,8 +1,10 @@
 package com.korniykom.play.presentation
 
+import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.korniykom.data.storage.Storage
+import com.korniykom.highscores.domain.HighscoresRepository
 import com.korniykom.minesweeper.presentation.components.BoardState
 import com.korniykom.minesweeper.presentation.components.TileState
 import com.korniykom.settings.domain.BoardSettingsRepository
@@ -26,6 +28,10 @@ class PlayViewModel(
     private val _playerExploded = MutableStateFlow(false)
     private val _restartButtonState = MutableStateFlow("\uD83D\uDE0E")
     private val _isFirstClick = MutableStateFlow(true)
+    private val _hiddenTilesCount = MutableStateFlow(0)
+    private val _boardSize = MutableStateFlow(0)
+    val boardSize = _boardSize.asStateFlow()
+    val hiddenTiles = _hiddenTilesCount.asStateFlow()
     val isFirstClick = _isFirstClick.asStateFlow()
     val restartButtonState = _restartButtonState.asStateFlow()
     val playerExploded = _playerExploded.asStateFlow()
@@ -43,6 +49,7 @@ class PlayViewModel(
     private val rowsFlow = storage.getAsFlow(BoardSettingsRepository.rowsKey);
     private val colsFlow = storage.getAsFlow(BoardSettingsRepository.colsKey)
 
+
     init {
         startTimer()
         resetBoard()
@@ -53,11 +60,20 @@ class PlayViewModel(
         stopTimer()
     }
 
+    fun addRecordToHighscores(time: Int, row: Int, col: Int) {
+        viewModelScope.launch {
+            val currentRecordsFlow = storage.getAsFlow(HighscoresRepository.highScore)
+            var currentRecords  = currentRecordsFlow.firstOrNull() ?: emptyList()
+            currentRecords = currentRecords + (time.toString() to "${row}x${col}")
+
+            storage.writeValue(HighscoresRepository.highScore, currentRecords)
+        }
+    }
 
     private suspend fun resetBoardSuspend() {
         val rows = rowsFlow.firstOrNull() ?: 10
         val cols = colsFlow.firstOrNull() ?: 10
-        _bombNumber.update { rows * cols / 10 }
+        _bombNumber.update { rows * cols / 5 }
         if(_bombNumber.value < 1) {
             _bombNumber.update { 1 }
         }
@@ -70,6 +86,7 @@ class PlayViewModel(
         viewModelScope.launch {
             val rows = rowsFlow.firstOrNull() ?: 10
             val cols = colsFlow.firstOrNull() ?: 10
+            _boardSize.update { rows * cols }
             _bombNumber.update { rows * cols / 10 }
             if(_bombNumber.value < 1) {
                 _bombNumber.update { 1 }
@@ -82,6 +99,7 @@ class PlayViewModel(
     }
 
     fun explodePlayer() {
+        stopTimer()
         _playerExploded.update { true }
         _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
             boardRow.mapIndexed { colIndex, tile ->
@@ -118,7 +136,7 @@ class PlayViewModel(
         }
     }
 
-    private fun stopTimer() {
+    fun stopTimer() {
         timerJob?.cancel()
     }
 
@@ -136,7 +154,6 @@ class PlayViewModel(
             if (currentRealTile is TileState.Revealed.Mine) {
                 viewModelScope.launch {
                     resetBoardSuspend()
-                    onClick(row, col)
                 }
                 return
             }
@@ -163,7 +180,17 @@ class PlayViewModel(
             return
         }
         if (currentRealTile is TileState.Revealed.Number && currentRealTile.number == null) {
+
             recursivelyRevealEmptyTiles(row, col)
+            var hiddenTiles = 0
+            _userBoard.value.mapIndexed { rowIndex, boardRow ->
+                boardRow.mapIndexed { colIndex, tile ->
+                    if(tile is TileState.Hidden) {
+                        hiddenTiles++
+                    }
+                }
+            }
+            _hiddenTilesCount.update { hiddenTiles }
             return
         }
         if (currentUserTile is TileState.Revealed.Number && currentRealTile is TileState.Revealed.Number && currentRealTile.number != null) {
@@ -222,6 +249,7 @@ class PlayViewModel(
 
 
         visitedTiles += row to col
+
 
         _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
             boardRow.mapIndexed { colIndex, tile ->

@@ -27,6 +27,9 @@ fun PlayScreen(
     val correctlyCheckedBombs by viewModel.correctlyCheckedBombs.collectAsState()
     val userExploded by viewModel.playerExploded.collectAsState()
     val restartButtonState by viewModel.restartButtonState.collectAsState()
+    val hiddenTiles by viewModel.hiddenTiles.collectAsState()
+    val boardSize by viewModel.boardSize.collectAsState()
+
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -36,12 +39,13 @@ fun PlayScreen(
             tileState = board,
             onClick = viewModel::onClick,
             onLongClick = viewModel::onLongClick,
-            emoji = restartButtonState,
+            emoji = "${hiddenTiles}",
             remainingBombs = remainingBombs.toString(),
             remainingSeconds = remainingSeconds.toString(),
             onRestartClick = viewModel::resetBoard
         )
-        if (correctlyCheckedBombs == bombsOnField) {
+        if (correctlyCheckedBombs == bombsOnField || hiddenTiles == bombsOnField  ) {
+            viewModel.stopTimer()
             AlertDialog(
                 onDismissRequest = {},
                 title = { Text("You Won") },

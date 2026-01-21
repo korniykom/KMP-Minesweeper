@@ -12,4 +12,7 @@ interface BoardSettingsRepository {
 
     data object colsKey : Storage.Key.IntKey("columns", 10)
     data object rowsKey : Storage.Key.IntKey("rows", 10)
+
+
+
 }

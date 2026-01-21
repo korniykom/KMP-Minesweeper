@@ -21,5 +21,6 @@ interface Storage {
         open class LongKey(name: String, defaultValue: Long?): Key<Long>(name, defaultValue)
         open class DoubleKey(name: String, defaultValue: Double?): Key<Double>(name, defaultValue)
         open class BooleanKey(name: String, defaultValue: Boolean?): Key<Boolean>(name, defaultValue)
+        open class ListKey(name: String, defaultValue: List<Pair<String,String>>?): Key<List<Pair<String,String>>>(name, defaultValue)
     }
 }

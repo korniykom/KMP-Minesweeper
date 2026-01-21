@@ -24,6 +24,7 @@ kotlin {
             implementation(projects.core.presentation)
             implementation(projects.core.data)
             implementation(projects.feature.settings.domain)
+            implementation(projects.feature.highscore.domain)
 
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)

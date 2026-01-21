@@ -14,6 +14,10 @@ kotlin {
         androidMain.dependencies {
         }
         commonMain.dependencies {
+            implementation(projects.feature.highscore.data)
+            implementation(projects.feature.highscore.domain)
+
+            implementation(projects.core.data)
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
 

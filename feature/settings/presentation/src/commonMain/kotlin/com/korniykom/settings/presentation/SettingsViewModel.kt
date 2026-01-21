@@ -13,6 +13,7 @@ class SettingsViewModel(
     val colsFlow = storage.getAsFlow(BoardSettingsRepository.colsKey)
     val rowsFlow = storage.getAsFlow(BoardSettingsRepository.rowsKey)
 
+
     fun updateCols(cols: Int) {
         viewModelScope.launch {
             storage.writeValue(BoardSettingsRepository.colsKey, cols)

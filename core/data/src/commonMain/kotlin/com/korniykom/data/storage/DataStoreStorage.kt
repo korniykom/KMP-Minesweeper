@@ -45,5 +45,6 @@ class DataStoreStorage(
         is Storage.Key.IntKey -> intPreferencesKey(key.name)
         is Storage.Key.LongKey -> longPreferencesKey(key.name)
         is Storage.Key.StringKey -> stringPreferencesKey(key.name)
+        else -> stringPreferencesKey(key.name)
     } as Preferences.Key<T>
 }
