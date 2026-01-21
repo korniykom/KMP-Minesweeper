@@ -10,6 +10,6 @@ interface BoardSettingsRepository {
     suspend fun updateCols(colNum: Int)
     suspend fun updateRows(rowNum: Int)
 
-    data object colsKey : Storage.Key.IntKey("columns", 1)
-    data object rowsKey : Storage.Key.IntKey("rows", 1)
+    data object colsKey : Storage.Key.IntKey("columns", 10)
+    data object rowsKey : Storage.Key.IntKey("rows", 10)
 }
