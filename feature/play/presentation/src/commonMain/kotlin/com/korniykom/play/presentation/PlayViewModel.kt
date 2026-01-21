@@ -127,6 +127,8 @@ class PlayViewModel(
 
         if (visitedTiles.contains(row to col)) return
         if (userTile !is TileState.Hidden) return
+        if (realTile is TileState.Revealed.Mine) return
+
 
         visitedTiles += row to col
 
