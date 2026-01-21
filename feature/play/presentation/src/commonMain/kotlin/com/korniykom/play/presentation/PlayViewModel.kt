@@ -54,6 +54,15 @@ class PlayViewModel(
 
     fun explodePlayer() {
         _playerExploded.update { true }
+        _userBoard.value = _userBoard.value.mapIndexed { rowIndex, boardRow ->
+            boardRow.mapIndexed{ colIndex, tile ->
+                if(_boardState.value[rowIndex][colIndex] is TileState.Revealed.Mine) {
+                    TileState.Revealed.Mine
+                } else {
+                    tile
+                }
+            }
+        }
     }
 
     private fun startTimer() {
