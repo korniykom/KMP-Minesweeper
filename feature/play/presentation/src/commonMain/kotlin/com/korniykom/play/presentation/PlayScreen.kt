@@ -25,6 +25,8 @@ fun PlayScreen(
     val remainingBombs = bombsOnField - bombChecked
     val correctlyCheckedBombs by viewModel.correctlyCheckedBombs.collectAsState()
     val userExploded by viewModel.playerExploded.collectAsState()
+    val restartButtonState by viewModel.restartButtonState.collectAsState()
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -33,9 +35,10 @@ fun PlayScreen(
             tileState = board,
             onClick = viewModel::onClick,
             onLongClick = viewModel::onLongClick,
-            emoji = "\uD83D\uDE0E",
+            emoji = restartButtonState,
             remainingBombs = remainingBombs.toString(),
-            remainingSeconds = remainingSeconds.toString()
+            remainingSeconds = remainingSeconds.toString(),
+            onRestartClick = viewModel::resetBoard
         )
 
         if (correctlyCheckedBombs == bombsOnField) {

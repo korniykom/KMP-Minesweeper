@@ -26,6 +26,8 @@ class PlayViewModel(
     private val _bombChecked = MutableStateFlow<Int>(-1)
     private val _correctlyCheckedBombs = MutableStateFlow(0)
     private val _playerExploded = MutableStateFlow(false)
+    private val _restartButtonState = MutableStateFlow("\uD83D\uDE0E")
+    val restartButtonState = _restartButtonState.asStateFlow()
     val playerExploded = _playerExploded.asStateFlow()
     val boardState = _boardState.asStateFlow()
     val userBoard = _userBoard.asStateFlow()
@@ -42,6 +44,16 @@ class PlayViewModel(
     private val colsFlow = storage.getAsFlow(BoardSettingsRepository.colsKey)
 
     init {
+        startTimer()
+        resetBoard()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopTimer()
+    }
+
+    fun resetBoard() {
         viewModelScope.launch {
             val rows = rowsFlow.firstOrNull() ?: 10
             val cols = colsFlow.firstOrNull() ?: 10
@@ -49,7 +61,7 @@ class PlayViewModel(
             initBoard(rows, cols, bombNumber.value)
             initUserBoard(rows, cols)
         }
-        startTimer()
+        resetTimer()
     }
 
     fun explodePlayer() {

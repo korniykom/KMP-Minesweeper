@@ -24,6 +24,7 @@ fun Board(
     remainingSeconds: String,
     onClick: (row: Int, col: Int) -> Unit,
     onLongClick: (row: Int, col: Int) -> Unit,
+    onRestartClick: () -> Unit,
     tileState: BoardState,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = TextStyle(),
@@ -53,7 +54,8 @@ fun Board(
                 remainingSeconds = remainingSeconds,
                 remainingBombs = remainingBombs,
                 emoji = emoji,
-                modifier = Modifier.width(tileSize * cols)
+                modifier = Modifier.width(tileSize * cols),
+                onRestartClick = onRestartClick
             )
 
             Column {
