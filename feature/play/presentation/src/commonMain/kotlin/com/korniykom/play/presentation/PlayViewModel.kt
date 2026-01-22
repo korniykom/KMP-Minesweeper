@@ -9,8 +9,11 @@ import com.korniykom.settings.domain.BoardSettingsRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -26,10 +29,8 @@ class PlayViewModel(
     private val _playerExploded = MutableStateFlow(false)
     private val _restartButtonState = MutableStateFlow("\uD83D\uDE0E")
     private val _isFirstClick = MutableStateFlow(true)
-    private val _hiddenTilesCount = MutableStateFlow(0)
     private val _boardSize = MutableStateFlow(0)
     val boardSize = _boardSize.asStateFlow()
-    val hiddenTiles = _hiddenTilesCount.asStateFlow()
     val isFirstClick = _isFirstClick.asStateFlow()
     val restartButtonState = _restartButtonState.asStateFlow()
     val playerExploded = _playerExploded.asStateFlow()
@@ -46,6 +47,12 @@ class PlayViewModel(
     private var timerJob: Job? = null
     private val rowsFlow = storage.getAsFlow(BoardSettingsRepository.rowsKey);
     private val colsFlow = storage.getAsFlow(BoardSettingsRepository.colsKey)
+
+    val hiddenTiles = userBoard
+        .map { board ->
+            board.sumOf { row -> row.count { it is TileState.Hidden } }
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
 
     init {
@@ -162,6 +169,7 @@ class PlayViewModel(
                     if (rowIndex == row && colIndex == col) currentRealTile else tile
                 }
             }
+
             return
         }
         if (currentRealTile is TileState.Revealed.Mine) {
@@ -171,15 +179,6 @@ class PlayViewModel(
         if (currentRealTile is TileState.Revealed.Number && currentRealTile.number == null) {
 
             recursivelyRevealEmptyTiles(row, col)
-            var hiddenTiles = 0
-            _userBoard.value.mapIndexed { rowIndex, boardRow ->
-                boardRow.mapIndexed { colIndex, tile ->
-                    if (tile is TileState.Hidden) {
-                        hiddenTiles++
-                    }
-                }
-            }
-            _hiddenTilesCount.update { hiddenTiles }
             return
         }
         if (currentUserTile is TileState.Revealed.Number && currentRealTile is TileState.Revealed.Number && currentRealTile.number != null) {

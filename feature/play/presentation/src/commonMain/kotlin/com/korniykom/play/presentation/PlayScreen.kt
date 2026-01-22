@@ -39,7 +39,7 @@ fun PlayScreen(
             tileState = board,
             onClick = viewModel::onClick,
             onLongClick = viewModel::onLongClick,
-            emoji = "${hiddenTiles}",
+            emoji = restartButtonState,
             remainingBombs = remainingBombs.toString(),
             remainingSeconds = remainingSeconds.toString(),
             onRestartClick = viewModel::resetBoard
