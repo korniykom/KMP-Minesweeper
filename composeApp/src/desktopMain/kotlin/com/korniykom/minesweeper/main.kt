@@ -2,7 +2,7 @@ package com.korniykom.minesweeper
 
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import com.korniykom.data.storage.createDataStore
+import com.korniykom.minesweeper.core.data.storage.createDataStore
 
 fun main() = application {
     Window(

@@ -15,7 +15,6 @@ kotlin {
 
         }
         commonMain.dependencies {
-            implementation(projects.core.domain)
             implementation(projects.core.data)
             implementation(projects.feature.settings.data)
             implementation(projects.feature.settings.domain)

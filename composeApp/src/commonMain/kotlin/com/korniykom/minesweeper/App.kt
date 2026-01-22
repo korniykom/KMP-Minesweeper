@@ -5,12 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.korniykom.play.presentation.Play
-import com.korniykom.play.presentation.playRoutes
-import com.korniykom.presentation.Menu
-import com.korniykom.presentation.menuRoutes
-import com.korniykom.settings.presentation.Settings
-import com.korniykom.settings.presentation.settingsRoutes
+import com.korniykom.minesweeper.play.presentation.Play
+import com.korniykom.minesweeper.play.presentation.playRoutes
+import com.korniykom.minesweeper.menu.presentation.Menu
+import com.korniykom.minesweeper.menu.presentation.menuRoutes
+import com.korniykom.minesweeper.settings.presentation.Settings
+import com.korniykom.minesweeper.settings.presentation.settingsRoutes
 import org.koin.compose.KoinApplication
 import org.koin.core.module.Module
 

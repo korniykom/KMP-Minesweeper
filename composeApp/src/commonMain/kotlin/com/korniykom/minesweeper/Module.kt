@@ -1,9 +1,9 @@
 package com.korniykom.minesweeper
 
-import com.korniykom.data.coreDataModule
-import com.korniykom.play.presentation.playPresentationModule
-import com.korniykom.settings.data.settingDataModule
-import com.korniykom.settings.presentation.settingPresentationModule
+import com.korniykom.minesweeper.core.data.coreDataModule
+import com.korniykom.minesweeper.play.presentation.playPresentationModule
+import com.korniykom.minesweeper.settings.data.settingDataModule
+import com.korniykom.minesweeper.settings.presentation.settingPresentationModule
 import org.koin.dsl.module
 
 val appModule = module {

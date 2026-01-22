@@ -1,4 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import java.io.FileInputStream
+import java.util.Properties
+import kotlin.apply
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -6,6 +9,20 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 }
+val libs = extensions.getByType<org.gradle.accessors.dm.LibrariesForLibs>()
+
+val versionPropertiesInputStream = FileInputStream("$rootDir/versions.properties")
+val versionProperties = Properties().apply {
+    load(versionPropertiesInputStream)
+}
+val versionCodeProperty = versionProperties.getProperty("versionCode").toInt()
+val versionMajorProperty = versionProperties.getProperty("versionMajor").toInt()
+val versionMinorProperty = versionProperties.getProperty("versionMinor").toInt()
+val versionPatchProperty = versionProperties.getProperty("versionPatch").toInt()
+
+val versionNameProperty = "$versionMajorProperty.$versionMinorProperty.$versionPatchProperty"
+
+
 
 kotlin {
     androidTarget()
@@ -46,6 +63,19 @@ kotlin {
     }
 }
 
+val appId = libs.versions.projectApplicationId.get()
+val targetSdk = libs.versions.projectTargetSdkVersion.get().toInt()
+
+
+android {
+    defaultConfig {
+        applicationId = appId
+        targetSdk = targetSdk
+        versionCode = versionCodeProperty
+        versionName = versionNameProperty
+    }
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
 }
@@ -57,7 +87,16 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.korniyokom.minesweeper"
-            packageVersion = "1.0.0"
+            packageVersion = versionNameProperty
+            description = "Minesweeper by korniykom"
+            copyright = "©2026 korniykom"
+        }
+
+        buildTypes.release {
+            proguard {
+                obfuscate.set(true)
+                configurationFiles.from("proguard-rules.pro")
+            }
         }
     }
 }
