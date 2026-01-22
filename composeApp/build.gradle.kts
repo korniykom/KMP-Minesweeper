@@ -85,7 +85,7 @@ compose.desktop {
         mainClass = "com.korniykom.minesweeper.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Rpm)
             packageName = "com.korniyokom.minesweeper"
             packageVersion = versionNameProperty
             description = "Minesweeper by korniykom"
